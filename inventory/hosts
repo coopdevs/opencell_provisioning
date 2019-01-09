@@ -1,0 +1,9 @@
+[test]
+opencell-test.coopdevs.org
+
+[dev]
+local.opencell.coop
+
+[opencell:children]
+dev
+test

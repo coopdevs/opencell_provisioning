@@ -1,0 +1,7 @@
+---
+# Sysadmins
+system_administrators_group: sysadmins
+system_administrators:
+  - name: daniel
+    ssh_key: '~/.ssh/id_rsa.pub'
+    state: present

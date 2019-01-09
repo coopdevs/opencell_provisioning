@@ -1,0 +1,12 @@
+---
+# Sysadmins
+system_administrators_group: sysadmins
+system_administrators:
+  - name: daniel
+    ssh_key: '../files/keys/dani.pub'
+    state: present
+  - name: enrico
+    ssh_key: '../files/keys/enrico.pub'
+    state: present
+
+certificate_authority_email: danypr92@gmail.com

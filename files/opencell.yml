@@ -1,0 +1,33 @@
+version: '2.1'
+
+services:
+
+  postgres:
+    image: postgres:alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: opencell_db_user
+      POSTGRES_PASSWORD: opencell_db_password
+      POSTGRES_DB : opencell_db
+      POSTGRES_PORT : 5432
+    volumes:
+       - $PWD/input-files/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+       - $PWD/input-files/import-postgres.sql:/docker-entrypoint-initdb.d/import-postgres.sql
+
+  opencell:
+    image: opencell/wildfly-opencell
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      KEYCLOAK_URL: http://${OPENCELL_HOST:-localhost}:8080/auth
+      SMTP_HOST: my.smtp.host
+      SMTP_PORT: 465
+      SMTP_FROM: no-reply@your-company.com
+      SMTP_USERNAME: username
+      SMTP_PASSWORD: password
+      JAVA_OPTS: -server -Xms1300m -Xmx3000m -XX:MetaspaceSize=300m -XX:MaxMetaspaceSize=500m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true -XX:NewSize=256m -XX:MaxNewSize=256m -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=80 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCompressedOops
+    ports:
+      - "8080:8080"
+    volumes:
+      - $PWD/input-files/opencell.war:/opt/jboss/wildfly/standalone/deployments/opencell.war

@@ -1,0 +1,41 @@
+---
+- name: Run using a project directory
+  hosts: opencell
+  become: yes
+
+  tasks:
+    - name: Install needed packages
+      apt:
+        # TODO: Versions??
+        name: ['curl', 'unzip', 'docker', 'docker-compose']
+
+    - name: Add sysadmins to Docker group
+      user:
+        name: "{{ item.name }}"
+        group: docker
+      with_items: "{{ system_administrators }}"
+
+    - name: Create app user to run the application
+      become: yes
+      user:
+        name: "opencell"
+        state: "present"
+        group: docker
+        shell: "/bin/bash"
+
+  roles:
+    - role: coopdevs.certbot_nginx
+      vars:
+        domain_name: "{{ inventory_hostname }}"
+        letsencrypt_email: "{{ certificate_authority_email }}"
+        certbot_nginx_cert_name: "{{ inventory_hostname }}"
+
+    - role: jdauphant.nginx
+      nginx_configs:
+        upstream:
+          - upstream opencell { server 127.0.0.1:8080; }
+      nginx_sites:
+        opencell:
+          template: ../../templates/opencell_nginx_site.conf.j2
+        opencell_ssl:
+          template: ../../templates/opencell_nginx_site.conf.ssl.j2
