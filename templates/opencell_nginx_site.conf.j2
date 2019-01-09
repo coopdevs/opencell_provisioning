@@ -13,9 +13,13 @@ server {
   proxy_set_header X-Forwarded-Proto $scheme;
   proxy_set_header X-Real-IP $remote_addr;
 
-  location / {
+  location /auth/ {
     proxy_redirect off;
     proxy_pass http://opencell;
+  }
+
+  location / {
+    rewrite ^(.*)$ https://$host$1;
   }
 
   access_log /var/log/nginx/opencell.access.log;
