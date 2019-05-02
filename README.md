@@ -1,3 +1,7 @@
+# DEPRECATED!
+
+DEPRECATED in favour of [coopdevs/opencell-provisioning](https://gitlab.com/coopdevs/opencell-provisioning/).
+
 # OpenCell Provision
 
 Ansible project to provision a server of [OpenCell](https://opencellsoft.com/) last version.
